@@ -18,7 +18,7 @@ namespace TheDreamFallen
             this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
             var buttons = new List<Button>();
-            var butname = strChoice.Split(';');
+            var butname = strChoice.Split('/');
             var labelBackground = Image.FromFile("../../../images/labelbeck.jpg");
 
             var label = new Label
@@ -49,11 +49,11 @@ namespace TheDreamFallen
                 Controls.Add(buttons[i]);
 
             for (var i = 0; i < buttons.Count; i++)
-                buttons[i].Click += (sender, args) => ClickComm(buttons.IndexOf((Button)sender));
+                buttons[i].Click += (sender, args) => ClickComm(sender.ToString());
             InitializeComponent();
         }
 
-        private void ClickComm(int i)
+        private void ClickComm(string i)
         {
             GameForm.HistoryChoice.Add(i);
             this.Close();

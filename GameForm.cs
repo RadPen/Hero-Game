@@ -52,7 +52,7 @@ namespace TheDreamFallen
 		//}
 
 		static public Choice Frm = new Choice();
-		static public List<int> HistoryChoice = new List<int>();
+		static public List<string> HistoryChoice = new List<string>();
 
 		public Image LabelBackground = Image.FromFile("../../../images/labelbeck.jpg");
 		public int Move = 0;
@@ -124,6 +124,7 @@ namespace TheDreamFallen
 
 			ButtonNext.Click += (sender, args) =>
 			{
+				var skip = 1;
 				if (step >= story.Length)
 				{
 					Move++;
@@ -136,50 +137,26 @@ namespace TheDreamFallen
 					step = 0;
 				}
 				var stepText = story[step].Split(';');
-
-					while (stepText[0] == ">" || stepText[0] == "#")
-					{
-						if (stepText[0] == ">")
-							NextBackground(StringToLocation(stepText[1]));
-						if (stepText[0] == "#")
-							CreateImage(StringToObject(stepText[1]));
-						step++;
-						stepText = story[step].Split(';');
-					}
-					CreateText(stepText);
-					step++;
-				//switch (Move)
-				//{
-				//	case 1:
-				//		CreateImage(Object.Empty);
-				//		StoryLabel.Text = CreateText("../../../text/text1.txt");
-				//		break;
-				//	case 2:
-				//		CreateImage(Object.Goddess);
-				//		StoryLabel.Text = CreateText("../../../text/text2.txt");
-				//		break;
-				//	case 3:
-				//		StoryLabel.Text = CreateText("../../../text/text3.txt");
-				//		break;
-				//	case 4:
-				//		StoryLabel.Text = CreateText("../../../text/deadmoretext1.txt");
-				//		NextBackground(Location.Cemetery);
-				//		break;
-				//	case 5:
-				//		Choice.strChoice = "я не помню; то ты?;√де €?";
-				//		Frm.ShowDialog();
-				//		break;
-				//	case 6:
-				//		if (HistoryChoice[0] == 0)
-				//			StoryLabel.Text = CreateText("../../../text/deadmoretext2.1.txt");
-				//		if (HistoryChoice[0] == 1)
-				//			StoryLabel.Text = CreateText("../../../text/deadmoretext2.2.txt");
-				//		if (HistoryChoice[0] == 2)
-				//			StoryLabel.Text = CreateText("../../../text/deadmoretext2.3.txt");
-				//		break;
-				//	default:
-				//		break;
-				//}
+				while (stepText[0] == ">" || stepText[0] == "#" || stepText[0] == "%")
+				{
+					if (stepText[0] == ">")
+						NextBackground(StringToLocation(stepText[1]));
+					if (stepText[0] == "#")
+						CreateImage(StringToObject(stepText[1]));
+					if (stepText[0] == "%")
+						CreateChoice(stepText[1]);
+				step++;
+				stepText = story[step].Split(';');
+				}
+				if (stepText[0] == "$")
+				{
+					if (HistoryChoice[int.Parse(stepText[1])] != stepText[2])
+						skip += int.Parse(stepText[3]);
+					step += skip;
+					stepText = story[step].Split(';');
+				}
+				CreateText(stepText);
+				step++;
 			};
 		}
 
@@ -241,6 +218,12 @@ namespace TheDreamFallen
 		{
 			Invalidate();
 			ImageObject = objects[name];
+		}
+
+		public void CreateChoice(string name)
+		{
+			Choice.strChoice = name;
+			Frm.ShowDialog();
 		}
 
 		public static Dictionary<Location, Bitmap> CreateBackground()
