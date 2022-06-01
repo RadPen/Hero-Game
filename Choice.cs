@@ -16,11 +16,11 @@ namespace TheDreamFallen
         public Choice()
         {
             this.StartPosition = FormStartPosition.CenterScreen;
-            InitializeComponent();
 
-            var labelBackground = Image.FromFile("../../../images/labelbeck.jpg");
+            InitializeComponent();
             var buttons = new List<Button>();
             var butname = strChoice.Split(';');
+            var labelBackground = Image.FromFile("../../../images/labelbeck.jpg");
 
             var label = new Label
             {
@@ -30,7 +30,7 @@ namespace TheDreamFallen
                 Image = labelBackground,
                 ForeColor = Color.White,
                 Font = new Font("Trebuchet MS", 20)
-        };
+            };
             Controls.Add(label);
 
             var bot = label.Bottom;
@@ -48,17 +48,17 @@ namespace TheDreamFallen
 				button.ForeColor = Color.White;
 				button.Font = new Font("Trebuchet MS", 18);
             }
-            InitializeComponent();
             for (var i = 0; i < buttons.Count; i++)
                 Controls.Add(buttons[i]);
 
             for (var i = 0; i < buttons.Count; i++)
                 buttons[i].Click += (sender, args) => ClickComm(buttons.IndexOf((Button)sender));
+            InitializeComponent();
         }
 
         private void ClickComm(int i)
         {
-            GameForm.moveChoice.Add(i);
+            GameForm.HistoryChoice.Add(i);
             this.Close();
         }
     }
