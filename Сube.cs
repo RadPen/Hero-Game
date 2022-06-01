@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 
 namespace TheDreamFallen
 {
-    internal class Сube
+    internal class Сube : GameForm
     {
         private static int cubedice;
-        static public int rollTheDice(int roll)
+        static public int RollTheDice(int roll)
         {
             Random rnd = new Random();
-            if (roll != 0)
+            if (roll == 0)
+                cubedice = 0;
+            else
                 cubedice = rnd.Next(1, roll+1);
             return cubedice;
         }

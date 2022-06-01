@@ -16,7 +16,6 @@ namespace TheDreamFallen
         public Choice()
         {
             this.StartPosition = FormStartPosition.CenterScreen;
-
             InitializeComponent();
             var buttons = new List<Button>();
             var butname = strChoice.Split(';');
@@ -34,8 +33,6 @@ namespace TheDreamFallen
             Controls.Add(label);
 
             var bot = label.Bottom;
-
-            InitializeComponent();
             foreach (var but in butname)
             {
                 var button = new Button();
