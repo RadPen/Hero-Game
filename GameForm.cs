@@ -51,7 +51,6 @@ namespace TheDreamFallen
 		//	}
 		//}
 
-		static public Choice Frm = new Choice();
 		static public List<string> HistoryChoice = new List<string>();
 
 		public Image LabelBackground = Image.FromFile("../../../images/labelbeck.jpg");
@@ -62,10 +61,12 @@ namespace TheDreamFallen
 		public Label StoryLabel;
 		public Label NamePerson;
 		public Button ButtonNext;
+		public string StrChoise;
 
 		private Dictionary<Location, Bitmap> background = CreateBackground();
 		private Dictionary<Object, Image> objects = CreateObject();
-		private Dictionary<int, string[]> storys = CreateStory();
+		private List<string[]> storys = CreateStory();
+		private List<string[]> randomEvents = CreateRandomEvents();
 
 		public GameForm()
 		{
@@ -94,7 +95,7 @@ namespace TheDreamFallen
 
 			NamePerson = new Label
 			{
-				Text = "? ? ?",
+				Text = "Начать игру",
 				Image = LabelBackground,
 				ForeColor = Color.LightGoldenrodYellow,
 				Font = new Font("Trebuchet MS", 16),
@@ -124,7 +125,6 @@ namespace TheDreamFallen
 
 			ButtonNext.Click += (sender, args) =>
 			{
-				var skip = 1;
 				if (step >= story.Length)
 				{
 					Move++;
@@ -137,27 +137,54 @@ namespace TheDreamFallen
 					step = 0;
 				}
 				var stepText = story[step].Split(';');
-				while (stepText[0] == ">" || stepText[0] == "#" || stepText[0] == "%")
-				{
+                //switch (stepText[0])
+                //{
+                //	case ">":
+                //		NextBackground(StringToLocation(stepText[1]));
+                //		step++;
+                //		break;
+                //	case "#":
+                //		CreateImage(StringToObject(stepText[1]));
+                //		step++;
+                //		break;
+                //	case "%":
+                //		CreateChoice(stepText[1]);
+                //		step++;
+                //		break;
+                //	case "$":
+                //		{
+                //			var skip = 1;
+                //			if (HistoryChoice[int.Parse(stepText[1])] != stepText[2])
+                //			skip += int.Parse(stepText[3]);
+                //			step += skip;
+                //			stepText = story[step].Split(';');
+                //		}
+                //		break;
+                //	default:
+                //		CreateText(stepText);
+                //		step++;
+                //		break;
+                //}
+                while (stepText[0] == ">" || stepText[0] == "#" || stepText[0] == "%" || stepText[0] == "$")
+                {
+					var skip = 1;
 					if (stepText[0] == ">")
-						NextBackground(StringToLocation(stepText[1]));
-					if (stepText[0] == "#")
-						CreateImage(StringToObject(stepText[1]));
-					if (stepText[0] == "%")
-						CreateChoice(stepText[1]);
-				step++;
-				stepText = story[step].Split(';');
-				}
-				if (stepText[0] == "$")
-				{
-					if (HistoryChoice[int.Parse(stepText[1])] != stepText[2])
-						skip += int.Parse(stepText[3]);
+                        NextBackground(StringToLocation(stepText[1]));
+                    if (stepText[0] == "#")
+                        CreateImage(StringToObject(stepText[1]));
+                    if (stepText[0] == "%")
+                        CreateChoice(stepText[1]);
+					if (stepText[0] == "$")
+						skip = CreateDialog(stepText);
 					step += skip;
-					stepText = story[step].Split(';');
-				}
-				CreateText(stepText);
-				step++;
-			};
+                    stepText = story[step].Split(';');
+                }
+                if (stepText[0] != ">" && stepText[0] != "#" && stepText[0] != "%" && stepText[0] != "$")
+                {
+                    CreateText(stepText);
+                    step++;
+                }
+            };
 		}
 
 		public Location StringToLocation(string location)
@@ -209,9 +236,7 @@ namespace TheDreamFallen
 
 		public static string[] CreateSuperText(string name)
 		{
-			var sr = File.ReadAllLines(name);
-
-			return sr;
+			return File.ReadAllLines(name);
 		}
 
 		public void CreateImage(Object name)
@@ -222,8 +247,15 @@ namespace TheDreamFallen
 
 		public void CreateChoice(string name)
 		{
-			Choice.strChoice = name;
-			Frm.ShowDialog();
+			var choise = new Choice(name);
+			choise.ShowDialog();
+		}
+		public int CreateDialog(string[] stepText)
+		{
+			var skip = 1;
+			if (HistoryChoice[int.Parse(stepText[1])] != stepText[2])
+				skip += int.Parse(stepText[3]);
+			return skip;
 		}
 
 		public static Dictionary<Location, Bitmap> CreateBackground()
@@ -246,10 +278,17 @@ namespace TheDreamFallen
 			return objects;
 		}
 
-		public static Dictionary<int, string[]> CreateStory()
+		public static List<string[]> CreateStory()
 		{
-			var story = new Dictionary<int, string[]>();
-			story.Add(0, CreateSuperText("../../../text/revival.txt"));
+			var story = new List<string[]>();
+			story.Add(CreateSuperText("../../../text/Cemetery/revival.txt"));
+			return story;
+		}
+
+		public static List<string[]> CreateRandomEvents()
+		{
+			var story = new List<string[]>();
+			story.Add(CreateSuperText("../../../text/Cemetery/revival.txt"));
 			return story;
 		}
 

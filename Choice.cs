@@ -12,8 +12,7 @@ namespace TheDreamFallen
 {
     public partial class Choice : Form
     {
-        static public string strChoice = "error";
-        public Choice()
+        public Choice(string strChoice)
         {
             this.StartPosition = FormStartPosition.CenterScreen;
             InitializeComponent();
@@ -49,7 +48,7 @@ namespace TheDreamFallen
                 Controls.Add(buttons[i]);
 
             for (var i = 0; i < buttons.Count; i++)
-                buttons[i].Click += (sender, args) => ClickComm(sender.ToString());
+                buttons[i].Click += (sender, args) => ClickComm(butname[buttons.IndexOf((Button)sender)]);
             InitializeComponent();
         }
 
@@ -58,5 +57,10 @@ namespace TheDreamFallen
             GameForm.HistoryChoice.Add(i);
             this.Close();
         }
+
+        //public void NameChoice(string i)
+        //{
+        //    StrChoice = i;
+        //}
     }
 }
